@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Adventure Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        #story {
+            margin: 20px auto;
+            padding: 20px;
+            width: 80%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #choices {
+            margin: 20px auto;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #inventory {
+            margin: 20px auto;
+            padding: 10px;
+            width: 80%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #inventory-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        #inventory-list li {
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Text Adventure Game</h1>
+    <div id="story"></div>
+    <div id="choices"></div>
+    <div id="inventory">
+        <h2>Inventory</h2>
+        <ul id="inventory-list"></ul>
+    </div>
+    <audio id="background-music" src="background-music.mp3" loop></audio>
+    <audio id="sound-effect"></audio>
+
+    <script>
+        const gameData = {
+            start: {
+                text: "You wake up in a dark forest with no memory of how you got here. The night is cold and the forest is dense. You see a faint path leading deeper into the woods.",
+                choices: [
+                    { text: "Follow the path", next: "follow_path" },
+                    { text: "Search the area", next: "search_area" },
+                    { text: "Call out for help", next: "call_help" }
+                ]
+            },
+            follow_path: {
+                text: "You follow the path and arrive at a small village. The villagers are wary but open. You notice a blacksmith, an alchemist, and the village leader.",
+                choices: [
+                    { text: "Visit the blacksmith", next: "blacksmith" },
+                    { text: "Talk to the alchemist", next: "alchemist" },
+                    { text: "Meet the village leader", next: "village_leader" }
+                ]
+            },
+            search_area: {
+                text: "You find a rusty dagger buried in the dirt and a faint path leading deeper into the forest.",
+                choices: [
+                    { text: "Take the dagger and follow the path", next: "follow_path", addItem: "Rusty Dagger" },
+                    { text: "Ignore the dagger and follow the path", next: "follow_path" }
+                ]
+            },
+            call_help: {
+                text: "No help comes. You feel more isolated. You decide to follow the path.",
+                choices: [
+                    { text: "Follow the path", next: "follow_path" }
+                ]
+            },
+            blacksmith: {
+                text: "The blacksmith offers to upgrade your rusty dagger. You need gold for this.",
+                choices: [
+                    { text: "Upgrade the dagger", next: "upgrade_dagger", itemRequired: "Gold" },
+                    { text: "Leave", next: "village" }
+                ]
+            },
+            alchemist: {
+                text: "The alchemist needs a rare ingredient from the castle’s dungeons in exchange for a magical scroll.",
+                choices: [
+                    { text: "Accept the quest", next: "quest_dungeons" },
+                    { text: "Decline and explore the village", next: "village" }
+                ]
+            },
+            village_leader: {
+                text: "The village leader speaks of a haunted castle nearby, which may hold secrets about your lost memory.",
+                choices: [
+                    { text: "Visit the castle", next: "castle_entrance" },
+                    { text: "Stay in the village", next: "village" }
+                ]
+            },
+            castle_entrance: {
+                text: "The castle is surrounded by a moat. You can either try to sneak in or speak to the guards.",
+                choices: [
+                    { text: "Sneak in", next: "sneak_in" },
+                    { text: "Talk to the guards", next: "talk_guards" }
+                ]
+            },
+            sneak_in: {
+                text: "You sneak into the castle and find yourself in a grand hall with many doors. One door leads to a dark laboratory.",
+                choices: [
+                    { text: "Investigate the laboratory", next: "laboratory" },
+                    { text: "Explore other rooms", next: "explore_rooms" }
+                ]
+            },
+            talk_guards: {
+                text: "The guards allow you in after you show them the glowing crystal. You enter the castle and explore.",
+                choices: [
+                    { text: "Explore the grand hall", next: "explore_rooms" }
+                ]
+            },
+            laboratory: {
+                text: "In the laboratory, you meet Master Orin who asks for a rare ingredient from the dungeons.",
+                choices: [
+                    { text: "Search the laboratory", next: "search_laboratory" },
+                    { text: "Find the ingredient", next: "quest_dungeons" }
+                ]
+            },
+            search_laboratory: {
+                text: "You find a potion labeled 'For Protection'.",
+                choices: [
+                    { text: "Take the potion", next: "take_potion", addItem: "Protection Potion" },
+                    { text: "Leave", next: "explore_rooms" }
+                ]
+            },
+            quest_dungeons: {
+                text: "You enter the dungeons, facing various challenges and creatures. You find the rare ingredient.",
+                choices: [
+                    { text: "Return to Master Orin", next: "return_orin" }
+                ]
+            },
+            return_orin: {
+                text: "Master Orin gives you a magical scroll for your efforts.",
+                choices: [
+                    { text: "Use the scroll to unlock the final room", next: "final_room", addItem: "Magical Scroll" },
+                    { text: "Continue exploring", next: "explore_rooms" }
+                ]
+            },
+            final_room: {
+                text: "The final room contains a powerful artifact and reveals the castle’s greatest secret.",
+                choices: [
+                    { text: "End the game", next: "end_game" }
+                ]
+            },
+            end_game: {
+                text: "Congratulations! You have completed the adventure and discovered the secrets of the castle. Your journey ends here, but new adventures await.",
+                choices: [
+                    { text: "Play again", next: "start" }
+                ]
+            }
+        };
+
+        let inventory = [];
+
+        function startGame() {
+            showStory('start');
+            playBackgroundMusic();
+        }
+
+        function showStory(storyKey) {
+            const story = gameData[storyKey];
+            const storyDiv = document.getElementById("story");
+            const choicesDiv = document.getElementById("choices");
+
+            storyDiv.innerHTML = story.text;
+            choicesDiv.innerHTML = "";
+
+            if (story.soundEffect) {
+                playSoundEffect(story.soundEffect);
+            }
+
+            if (story.choices.length > 0) {
+                story.choices.forEach(choice => {
+                    const button = document.createElement("button");
+                    button.textContent = choice.text;
+                    button.onclick = () => {
+                        if (choice.itemRequired && !inventory.includes(choice.itemRequired)) {
+                            alert("You need " + choice.itemRequired + " to do that!");
+                        } else {
+                            if (choice.addItem) {
+                                addToInventory(choice.addItem);
+                            }
+                            showStory(choice.next);
+                        }
+                    };
+                    choicesDiv.appendChild(button);
+                });
+            } else {
+                const button = document.createElement("button");
+                button.textContent = "Restart";
+                button.onclick = startGame;
+                choicesDiv.appendChild(button);
+            }
+        }
+
+        function addToInventory(item) {
+            if (!inventory.includes(item)) {
+                inventory.push(item);
+                updateInventoryDisplay();
+            }
+        }
+
+        function updateInventoryDisplay() {
+            const inventoryList = document.getElementById("inventory-list");
+            inventoryList.innerHTML = "";
+
+            inventory.forEach(item => {
+                const listItem = document.createElement("li");
+                listItem.textContent = item;
+                inventoryList.appendChild(listItem);
+            });
+        }
+
+        function playBackgroundMusic() {
+            const music = document.getElementById("background-music");
+            music.play();
+        }
+
+        function playSoundEffect(src) {
+            const soundEffect = document.getElementById("sound-effect");
+            soundEffect.src = src;
+            soundEffect.play();
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
