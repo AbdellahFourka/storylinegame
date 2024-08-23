@@ -1,1 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    max-width: 1200px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#story {
+    flex: 2;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+}
+
+#inventory {
+    flex: 1;
+    padding: 20px;
+}
+
+#choices button {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#choices button:hover {
+    background-color: #0056b3;
+}
+
+#inventory ul {
+    list-style: none;
+    padding: 0;
+}
+
+#inventory li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.forest {
+    background-image: url('https://www.w3schools.com/w3images/forest.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.village {
+    background-image: url('https://www.w3schools.com/w3images/village.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.cave {
+    background-image: url('https://www.w3schools.com/w3images/cave.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.magical-realm {
+    background-image: url('https://www.w3schools.com/w3images/magical_realm.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.inventory-item {
+    font-style: italic;
+    color: #007bff;
+}
+
+.crafting-item {
+    font-style: italic;
+    color: #28a745;
+}
+
+.floating-isles {
+    background-image: url('https://www.w3schools.com/w3images/floating_isles.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.lagoon {
+    background-image: url('https://www.w3schools.com/w3images/lagoon.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.lost-temple {
+    background-image: url('https://www.w3schools.com/w3images/lost_temple.jpg');
+    background-size: cover;
+    background-position: center;
+}
 
